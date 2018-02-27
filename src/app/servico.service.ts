@@ -1,42 +1,42 @@
 /*tslint:disable*/
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {catchError} from 'rxjs/operators';
 import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
+import {Servico} from './servico.model';
 
 @Injectable()
 export class ServicoService {
-  url = 'http://localhost:8081/api/servicos';
+    url = 'http://localhost:8081/api/servicos';
 
-  constructor(private http: HttpClient) { }
-
-    getServicos() {
-        return this.http.get(this.url);
+    constructor(private http: HttpClient) {
     }
 
-    postServico(): Observable<any>{
+    getServicos(): Observable<Servico[]> {
+        return this.http.get<Servico[]>(this.url);
+    }
+
+    postServico(servico?: Servico): Observable<any> {
         const httpOptions = {
             headers: new HttpHeaders({
-                'Content-Type':  'application/json'
+                'Content-Type': 'application/json'
             })
         };
 
-        const body = '{"servico":{"descricao":"Teste Angular","nome":"Angular","preco":"11"}}';
+        const jsonServico = JSON.stringify(servico)
+        const body = `{"servico":${jsonServico}}`;
 
-        return this.http.post<any>(this.url, body, httpOptions)
+        return this.http.post<Servico>(this.url, body, httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
     }
 
     deleteServico(id?: string): Observable<{}> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type':  'application/json'
-            }),
-            httpParams: new HttpParams()
-                .append("idservico", "7")
+        let httpOptions = {
+            headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+            body: new HttpParams().set('idservico', id)
         };
 
         return this.http.delete(this.url, httpOptions)
@@ -45,11 +45,9 @@ export class ServicoService {
             );
     }
 
-
-
     private handleError(error: HttpErrorResponse) {
         if (error.error instanceof ErrorEvent) {
-            console.error('An error occurred:', error.error.message);
+            console.error('Ocorreu um erro:', error.error.message);
         } else {
             console.error(
                 `Backend returned code ${error.status}, ` +

@@ -1,2 +1,42 @@
+
+{{ servico | json }}
+<form #servicoForm="ngForm">
+    <div>
+        Nome:
+        <input type="text" class="form-control"
+               required [(ngModel)]="servico.nome" name="nome">
+    </div>
+    <div>
+        Descricao:
+        <input type="text" class="form-control"
+               required [(ngModel)]="servico.descricao" name="descricao">
+    </div>
+    <div>
+        Preço:
+        <input type="text" class="form-control"
+               required [(ngModel)]="servico.preco" name="preco">
+    </div>
+</form>
 <button (click)="postServico()">Salvar Servico</button>
-<button (click)="deleteServico('5')">Deletar Servico de ID: 5</button>
+<br><br>
+
+<!-- LISTANDO OS SERVIÇOS E DEIXANDO ATUALIZAR E DELETAR -->
+<table style="border: solid">
+    <tr>
+        <th>Código</th>
+        <th>Descrição</th>
+        <th>Nome</th>
+        <th>Preço</th>
+        <th>Ações</th>
+    </tr>
+    <tr *ngFor="let servico of servicos">
+        <td>{{servico?.idservico}}</td>
+        <td>{{servico?.descricao}}</td>
+        <td> {{servico?.nome}}</td>
+        <td> {{servico?.Preco}}</td>
+        <td>
+            <button (click)="deleteServico(servico?.idservico)">Deletar</button>
+        </td>
+    </tr>
+</table>
+
